@@ -4,23 +4,49 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRef, useState } from "react";
 
 export default function Home() {
-
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const gradeRef = useRef<HTMLInputElement>(null);
   const groupRef = useRef<HTMLInputElement>(null);
+  const dateRef = useRef<HTMLInputElement>(null);
 
-  const [showModal, setShowModal] = useState(false); // ← モーダル表示制御用
+  const [showModal, setShowModal] = useState(false); // モーダル表示制御用
+
+  // 日付入力時に金曜日かどうかをチェックするハンドラ
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (!value) return; // 入力がない場合は何もしない
+
+    const selectedDate = new Date(value);
+    // JavaScriptでは、getDay() は 0:日曜, 1:月曜, …, 5:金曜, 6:土曜 を返す
+    if (selectedDate.getDay() !== 5) {
+      alert("金曜日の日付を選択してください。");
+      // 入力内容をクリアする
+      if (dateRef.current) {
+        dateRef.current.value = "";
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // 送信前にも金曜日チェックを行う（念のため）
+    if (dateRef.current) {
+      const selectedDate = new Date(dateRef.current.value);
+      if (selectedDate.getDay() !== 5) {
+        alert("送信前に金曜日の日付を選択してください。");
+        return;
+      }
+    }
 
     const data = {
       name: nameRef.current?.value,
       email: emailRef.current?.value,
       grade: gradeRef.current?.value,
       group: groupRef.current?.value,
-    }
+      date: dateRef.current?.value,
+    };
 
     await fetch("api/sendGmail", {
       method: "POST",
@@ -29,16 +55,18 @@ export default function Home() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then((res) => {
-      if (res.status === 200) {
-        console.log("メール送信成功");
-        setShowModal(true); // ← モーダル表示
-      } else {
-        alert("送信に失敗しました");
-      }
-    }).catch(() => {
-      alert("送信中にエラーが発生しました");
-    });
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("メール送信成功");
+          setShowModal(true);
+        } else {
+          alert("送信に失敗しました");
+        }
+      })
+      .catch(() => {
+        alert("送信中にエラーが発生しました");
+      });
   };
 
   const closeModal = () => {
@@ -52,7 +80,7 @@ export default function Home() {
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="name" className="form-label">お名前</label>
-            <input type="text" className="form-control" id="name" required ref={nameRef}/>
+            <input type="text" className="form-control" id="name" required ref={nameRef} />
           </div>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">メールアドレス</label>
@@ -64,7 +92,19 @@ export default function Home() {
           </div>
           <div className="mb-3">
             <label htmlFor="group" className="form-label">組</label>
-            <input type="text" className="form-control" id="group" required ref={groupRef}/>
+            <input type="text" className="form-control" id="group" required ref={groupRef} />
+          </div>
+          {/* 金曜日のみ選択できるように、onChangeイベントでチェック */}
+          <div className="mb-3">
+            <label htmlFor="date" className="form-label" id="date">日付（金曜日のみ選択）</label>
+            <input
+              type="date"
+              className="form-control"
+              id="date"
+              required
+              ref={dateRef}
+              onChange={handleDateChange}
+            />
           </div>
           <button type="submit" className="btn btn-danger">送信</button>
         </form>

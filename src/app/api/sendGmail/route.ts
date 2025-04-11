@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   try {
     // リクエスト body の取り出し
     const body = await req.json();
-    const { name, email, grade, group } = body;
+    const { name, email, grade, group, date } = body;
 
     // nodemailer で SMTP 接続を作成
     const transporter = nodemailer.createTransport({
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       port: 587,
       auth: {
         user: process.env.GMAILUSER,
-        pass: process.env.GMAILPASSWORD,
+        pass: process.env.GMAILPASSWORD, 
       },
     });
 
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       from: email,
       to: 'ryutoiwa2929@gmail.com',
       subject: `[茶道部-入部届] ${name} 様より`,
-      text: `【名前】${name}\n【学年】${grade}\n【組】${group}\n【メールアドレス】${email}`,
+      text: `【名前】${name}\n【学年】${grade}\n【組】${group}\n【メールアドレス】${email}\n 【日付】${date}`,
       html: `
         <p>【名前】</p>
         <p>${name}</p>
@@ -37,6 +37,8 @@ export async function POST(req: Request) {
         <p>${group}</p>
         <p>【メールアドレス】</p>
         <p>${email}</p>
+        <p>【日付】</p>
+        <p>${date}</p>
       `,
     };
 
