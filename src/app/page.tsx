@@ -10,7 +10,7 @@ export default function Home() {
   const gradeRef = useRef<HTMLInputElement>(null);
   const groupRef = useRef<HTMLInputElement>(null);
 
-  const [message, setMessage] = useState(""); 
+  const [showModal, setShowModal] = useState(false); // ← モーダル表示制御用
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,13 +32,17 @@ export default function Home() {
     }).then((res) => {
       if (res.status === 200) {
         console.log("メール送信成功");
-        setMessage("送信しました！"); 
+        setShowModal(true); // ← モーダル表示
       } else {
-        setMessage("送信に失敗しました");
+        alert("送信に失敗しました");
       }
     }).catch(() => {
-      setMessage("送信中にエラーが発生しました");
+      alert("送信中にエラーが発生しました");
     });
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -64,14 +68,27 @@ export default function Home() {
           </div>
           <button type="submit" className="btn btn-danger">送信</button>
         </form>
-
-        {/* メッセージ表示部 */}
-        {message && (
-          <div className="alert alert-info mt-3" role="alert">
-            {message}
-          </div>
-        )}
       </div>
+
+      {/* モーダル */}
+      {showModal && (
+        <div className="modal fade show d-block" tabIndex={-1} role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">確認</h5>
+                <button type="button" className="btn-close" aria-label="閉じる" onClick={closeModal}></button>
+              </div>
+              <div className="modal-body">
+                <p>送信しました！</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-primary" onClick={closeModal}>閉じる</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
