@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button } from 'react-bootstrap';
 import { useRef } from "react";
 
 export default function Home() {
@@ -16,7 +14,7 @@ export default function Home() {
     e.preventDefault();
     // console.log(nameRef.current?.value);
 
-    let data = {
+    const data = {
       name: nameRef.current?.value,
       email: emailRef.current?.value,
       grade: gradeRef.current?.value,
