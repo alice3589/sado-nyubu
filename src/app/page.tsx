@@ -12,30 +12,15 @@ export default function Home() {
 
   const [showModal, setShowModal] = useState(false); // モーダル表示制御用
 
-  // 日付入力時に金曜日かどうかをチェックするハンドラ
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!value) return; // 入力がない場合は何もしない
-
-    const selectedDate = new Date(value);
-    // JavaScriptでは、getDay() は 0:日曜, 1:月曜, …, 5:金曜, 6:土曜 を返す
-    if (selectedDate.getDay() !== 5) {
-      alert("金曜日の日付を選択してください。");
-      // 入力内容をクリアする
-      if (dateRef.current) {
-        dateRef.current.value = "";
-      }
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // 送信前にも金曜日チェックを行う（念のため）
+    // 送信時に金曜日かどうかを検証
     if (dateRef.current) {
       const selectedDate = new Date(dateRef.current.value);
+      // JavaScriptの getDay() では 0:日曜, 1:月曜, …, 5:金曜, 6:土曜
       if (selectedDate.getDay() !== 5) {
-        alert("送信前に金曜日の日付を選択してください。");
+        alert("金曜日の日付を選択してください。");
         return;
       }
     }
@@ -94,23 +79,22 @@ export default function Home() {
             <label htmlFor="group" className="form-label">組</label>
             <input type="text" className="form-control" id="group" required ref={groupRef} />
           </div>
-          {/* 金曜日のみ選択できるように、onChangeイベントでチェック */}
+          {/* 日付入力フィールド */}
           <div className="mb-3">
-            <label htmlFor="date" className="form-label" id="date">日付（金曜日のみ選択）</label>
-            <input
-              type="date"
-              className="form-control"
-              id="date"
-              required
-              ref={dateRef}
-              onChange={handleDateChange}
+            <label htmlFor="date" className="form-label">体験入部希望日（金曜日のみ選択）</label>
+            <input 
+              type="date" 
+              className="form-control" 
+              id="date" 
+              required 
+              ref={dateRef} 
             />
           </div>
           <button type="submit" className="btn btn-danger">送信</button>
         </form>
       </div>
 
-      {/* モーダル */}
+      {/* モーダル表示 */}
       {showModal && (
         <div className="modal fade show d-block" tabIndex={-1} role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div className="modal-dialog" role="document">
