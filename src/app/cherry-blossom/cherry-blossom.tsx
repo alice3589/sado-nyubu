@@ -36,7 +36,7 @@ export default function CherryBlossom() {
     };
 
     // 花びらを生成する間隔をミリ秒で指定
-    const interval = setInterval(createPetal, 200);
+    const interval = setInterval(createPetal, 100000);
 
     // クリーンアップ関数
     return () => {

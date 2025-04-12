@@ -2,6 +2,7 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRef, useState } from "react";
+import CherryBlossom from "./cherry-blossom/cherry-blossom";
 
 export default function Home() {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -118,6 +119,8 @@ export default function Home() {
           </div>
         </div>
       )}
+      <CherryBlossom />
     </main>
   );
 }
+
