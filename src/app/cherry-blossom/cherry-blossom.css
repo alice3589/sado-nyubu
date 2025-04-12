@@ -15,7 +15,7 @@
     position: absolute;
     background-color: #ffb7c5; /* 花びらの色 */
     border-radius: 150% 0 150% 0;
-    animation: animate-petal 15s linear;
+    animation: animate-petal 15s ease-in-out;
     opacity: 0.8;
   }
   
@@ -42,12 +42,24 @@
     10% {
       opacity: 0.8;
     }
+    20% {
+      transform: rotate(90deg) translateX(30px);
+    }
+    40% {
+      transform: rotate(180deg) translateX(-30px);
+    }
+    60% {
+      transform: rotate(270deg) translateX(20px);
+    }
+    80% {
+      transform: rotate(360deg) translateX(-20px);
+    }
     90% {
       opacity: 0.8;
     }
     100% {
       opacity: 0;
       top: 110%;
-      transform: rotate(3600deg) translateX(100px);
+      transform: rotate(720deg) translateX(0);
     }
   }
