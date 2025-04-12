@@ -10,7 +10,7 @@ export default function Home() {
   const groupRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
 
-  const [showModal, setShowModal] = useState(false); // モーダル表示制御用
+  const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,7 +85,6 @@ export default function Home() {
             <label htmlFor="group" className="form-label">組</label>
             <input type="text" className="form-control" id="group" required ref={groupRef} />
           </div>
-          {/* 日付入力フィールド */}
           <div className="mb-3">
             <label htmlFor="date" className="form-label">体験入部希望日（金曜日のみ選択）</label>
             <input 
@@ -96,7 +95,7 @@ export default function Home() {
               ref={dateRef} 
             />
           </div>
-          <button type="submit" className="btn btn-danger">送信</button>
+          <button type="submit" className="btn btn-primary">送信</button>
         </form>
       </div>
 
