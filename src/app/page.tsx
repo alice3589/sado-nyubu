@@ -15,6 +15,12 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // メールアドレスのバリデーション
+    if (emailRef.current?.value && !emailRef.current.value.endsWith('@ktc.ac.jp')) {
+      alert('メールアドレスは@ktc.ac.jpドメインのみ使用可能です。');
+      return;
+    }
+
     // 送信時に金曜日かどうかを検証
     if (dateRef.current) {
       const selectedDate = new Date(dateRef.current.value);
