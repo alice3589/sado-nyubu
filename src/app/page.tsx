@@ -115,7 +115,7 @@ export default function Home() {
                 <img src="/images/campusmap.png" alt="活動場所の地図" />
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={closeModal}>閉じる</button>
+                <button type="button" className="btn " onClick={closeModal}>閉じる</button>
               </div>
             </div>
           </div>
