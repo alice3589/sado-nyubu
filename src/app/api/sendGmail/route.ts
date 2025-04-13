@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         <p>${group}</p>
         <p>【メールアドレス】</p>
         <p>${email}</p>
-        <p>【日付】</p>
+        <p>【体験入部予定日】</p>
         <p>${date}</p>
       `,
     };
