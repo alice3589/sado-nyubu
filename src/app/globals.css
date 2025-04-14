@@ -105,6 +105,37 @@ h2 {
   letter-spacing: 0.5px;
 }
 
+h3 {
+  color: #1e293b;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+h4 {
+  color: #334155;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.bg-white {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.list-disc {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+}
+
+.list-disc li {
+  margin-bottom: 4px;
+  color: #475569;
+}
+
 /* モーダルのスタイル */
 .modal-content {
   border-radius: 16px;
