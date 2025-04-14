@@ -3,6 +3,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRef, useState } from "react";
 import CherryBlossom from "./cherry-blossom/cherry-blossom";
+import ActivitySchedule from './components/ActivitySchedule';
 
 export default function Home() {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -13,52 +14,43 @@ export default function Home() {
 
   const [showModal, setShowModal] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // メールアドレスのバリデーション
-    if (emailRef.current?.value && !emailRef.current.value.endsWith('@ktc.ac.jp')) {
-      alert('メールアドレスは@ktc.ac.jpドメインのみ使用可能です。');
+    // メールアドレスの検証
+    const email = emailRef.current?.value;
+    if (email && !email.endsWith('@ktc.ac.jp')) {
+      alert('メールアドレスは@ktc.ac.jpで終わる必要があります');
       return;
     }
 
-    // 送信時に金曜日かどうかを検証
-    if (dateRef.current) {
-      const selectedDate = new Date(dateRef.current.value);
-      // JavaScriptの getDay() では 0:日曜, 1:月曜, …, 5:金曜, 6:土曜
-      if (selectedDate.getDay() !== 5) {
-        alert("金曜日の日付を選択してください。");
-        return;
-      }
-    }
-
-    const data = {
-      name: nameRef.current?.value,
-      email: emailRef.current?.value,
-      grade: gradeRef.current?.value,
-      group: groupRef.current?.value,
-      date: dateRef.current?.value,
-    };
-
-    await fetch("api/sendGmail", {
-      method: "POST",
-      headers: {
-        Accept: "application/json, text/plain",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("メール送信成功");
-          setShowModal(true);
-        } else {
-          alert("送信に失敗しました");
-        }
-      })
-      .catch(() => {
-        alert("送信中にエラーが発生しました");
+    try {
+      const response = await fetch('/api/sendGmail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: nameRef.current?.value,
+          email: emailRef.current?.value,
+          grade: gradeRef.current?.value,
+          group: groupRef.current?.value,
+          date: dateRef.current?.value,
+        }),
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setShowModal(true);
+      } else {
+        console.error('サーバーエラー:', data);
+        alert(`送信に失敗しました: ${data.error || data.message}`);
+      }
+    } catch (error) {
+      console.error('送信エラー:', error);
+      alert('送信中にエラーが発生しました。もう一度お試しください。');
+    }
   };
 
   const closeModal = () => {
@@ -100,28 +92,7 @@ export default function Home() {
         </form>
       </div>
 
-      {/* 活動予定セクション */}
-      <div className="container mt-5">
-        <h3 className="mb-4 text-center">次の活動予定</h3>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="mb-3">
-            <h4 className="font-bold">日時</h4>
-            <p>2024年4月12日（金）15:30〜17:00</p>
-          </div>
-          <div className="mb-3">
-            <h4 className="font-bold">場所</h4>
-            <p>茶道室（3号館1階）</p>
-          </div>
-          <div>
-            <h4 className="font-bold">持ち物</h4>
-            <ul className="list-disc pl-5">
-              <li>上履き</li>
-              <li>白い靴下</li>
-              <li>筆記用具</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <ActivitySchedule />
 
       {/* モーダル表示 */}
       {showModal && (
