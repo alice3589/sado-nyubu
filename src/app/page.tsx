@@ -3,7 +3,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRef, useState } from "react";
 import CherryBlossom from "./cherry-blossom/cherry-blossom";
-import ActivitySchedule from './components/ActivitySchedule';
 
 export default function Home() {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -14,43 +13,52 @@ export default function Home() {
 
   const [showModal, setShowModal] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // メールアドレスの検証
-    const email = emailRef.current?.value;
-    if (email && !email.endsWith('@ktc.ac.jp')) {
-      alert('メールアドレスは@ktc.ac.jpで終わる必要があります');
+    // メールアドレスのバリデーション
+    if (emailRef.current?.value && !emailRef.current.value.endsWith('@ktc.ac.jp')) {
+      alert('メールアドレスは@ktc.ac.jpドメインのみ使用可能です。');
       return;
     }
 
-    try {
-      const response = await fetch('/api/sendGmail', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: nameRef.current?.value,
-          email: emailRef.current?.value,
-          grade: gradeRef.current?.value,
-          group: groupRef.current?.value,
-          date: dateRef.current?.value,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setShowModal(true);
-      } else {
-        console.error('サーバーエラー:', data);
-        alert(`送信に失敗しました: ${data.error || data.message}`);
+    // 送信時に金曜日かどうかを検証
+    if (dateRef.current) {
+      const selectedDate = new Date(dateRef.current.value);
+      // JavaScriptの getDay() では 0:日曜, 1:月曜, …, 5:金曜, 6:土曜
+      if (selectedDate.getDay() !== 5) {
+        alert("金曜日の日付を選択してください。");
+        return;
       }
-    } catch (error) {
-      console.error('送信エラー:', error);
-      alert('送信中にエラーが発生しました。もう一度お試しください。');
     }
+
+    const data = {
+      name: nameRef.current?.value,
+      email: emailRef.current?.value,
+      grade: gradeRef.current?.value,
+      group: groupRef.current?.value,
+      date: dateRef.current?.value,
+    };
+
+    await fetch("api/sendGmail", {
+      method: "POST",
+      headers: {
+        Accept: "application/json, text/plain",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("メール送信成功");
+          setShowModal(true);
+        } else {
+          alert("送信に失敗しました");
+        }
+      })
+      .catch(() => {
+        alert("送信中にエラーが発生しました");
+      });
   };
 
   const closeModal = () => {
@@ -92,8 +100,6 @@ export default function Home() {
         </form>
       </div>
 
-      <ActivitySchedule />
-
       {/* モーダル表示 */}
       {showModal && (
         <div className="modal fade show d-block" tabIndex={-1} role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -105,11 +111,18 @@ export default function Home() {
               </div>
               <div className="modal-body">
                 <p>送信しました！</p>
-                <p className="mt-3">活動場所はここ！</p>
-                <img src="/images/campusmap.png" alt="活動場所の地図" />
+                <div className="mt-4">
+                  <h5 className="text-center mb-3">部活の活動場所はここ！</h5>
+                  <img 
+                    src="/images/campusmap.png" 
+                    alt="キャンパスマップ" 
+                    className="img-fluid rounded shadow-sm"
+                    style={{ maxWidth: '100%', height: 'auto' }}
+                  />
+                </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn " onClick={closeModal}>閉じる</button>
+                <button type="button" className="btn btn-primary" onClick={closeModal}>閉じる</button>
               </div>
             </div>
           </div>

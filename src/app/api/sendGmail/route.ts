@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 // nodemailer で使う環境変数は .env に設定
 //   GMAILUSER=<アカウント>
 //   GMAILPASSWORD=<パスワード>
+//   SECOND_EMAIL=<2つ目のメールアドレス>
 
 export async function POST(request: Request) {
   try {
@@ -11,7 +12,8 @@ export async function POST(request: Request) {
 
     console.log('環境変数:', {
       user: process.env.GMAILUSER,
-      hasPassword: !!process.env.GMAILPASSWORD
+      hasPassword: !!process.env.GMAILPASSWORD,
+      hasSecondEmail: !!process.env.SECOND_EMAIL
     });
 
     // メール送信の設定
@@ -32,7 +34,7 @@ export async function POST(request: Request) {
     // メールの内容
     const mailOptions = {
       from: process.env.GMAILUSER,
-      to: process.env.GMAILUSER,
+      to: `${process.env.GMAILUSER}, ${process.env.SECOND_EMAIL}`,
       subject: '茶道部入部届',
       html: `
         <h2>茶道部入部届</h2>
