@@ -5,15 +5,22 @@ import nodemailer from 'nodemailer';
 //   GMAILUSER=<アカウント>
 //   GMAILPASSWORD=<パスワード>
 //   SECOND_EMAIL=<2つ目のメールアドレス>
+//   THIRD_EMAIL=<3つ目のメールアドレス>
 
 export async function POST(request: Request) {
   try {
     const { name, email, grade, group, date } = await request.json();
 
+    // 環境変数の存在確認
+    if (!process.env.GMAILUSER || !process.env.GMAILPASSWORD) {
+      throw new Error('Gmail認証情報が設定されていません');
+    }
+
     console.log('環境変数:', {
       user: process.env.GMAILUSER,
       hasPassword: !!process.env.GMAILPASSWORD,
-      hasSecondEmail: !!process.env.SECOND_EMAIL
+      hasSecondEmail: !!process.env.SECOND_EMAIL,
+      hasThirdEmail: !!process.env.THIRD_EMAIL
     });
 
     // メール送信の設定
@@ -31,10 +38,15 @@ export async function POST(request: Request) {
       throw error;
     });
 
+    // 送信先メールアドレスの設定
+    const toEmails = [process.env.GMAILUSER];
+    if (process.env.SECOND_EMAIL) toEmails.push(process.env.SECOND_EMAIL);
+    if (process.env.THIRD_EMAIL) toEmails.push(process.env.THIRD_EMAIL);
+
     // メールの内容
     const mailOptions = {
       from: process.env.GMAILUSER,
-      to: `${process.env.GMAILUSER}, ${process.env.SECOND_EMAIL}, ${process.env.THIRD_EMAIL}`,
+      to: toEmails.join(', '),
       subject: '茶道部入部届',
       html: `
         <h2>茶道部入部届</h2>
@@ -46,7 +58,10 @@ export async function POST(request: Request) {
       `,
     };
 
-    console.log('送信設定:', mailOptions);
+    console.log('送信設定:', {
+      ...mailOptions,
+      to: toEmails
+    });
 
     // メール送信
     const info = await transporter.sendMail(mailOptions);
