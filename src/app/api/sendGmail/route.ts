@@ -5,7 +5,6 @@ import nodemailer from 'nodemailer';
 //   GMAILUSER=<アカウント>
 //   GMAILPASSWORD=<パスワード>
 //   SECOND_EMAIL=<2つ目のメールアドレス>
-//   THIRD_EMAIL=<3つ目のメールアドレス>
 
 export async function POST(request: Request) {
   try {
@@ -32,15 +31,10 @@ export async function POST(request: Request) {
       throw error;
     });
 
-    // 送信先メールアドレスの設定
-    const toEmails = [process.env.GMAILUSER];
-    if (process.env.SECOND_EMAIL) toEmails.push(process.env.SECOND_EMAIL);
-    if (process.env.THIRD_EMAIL) toEmails.push(process.env.THIRD_EMAIL);
-
     // メールの内容
     const mailOptions = {
       from: process.env.GMAILUSER,
-      to: toEmails.join(', '),
+      to: `${process.env.GMAILUSER}, ${process.env.SECOND_EMAIL}`,
       subject: '茶道部入部届',
       html: `
         <h2>茶道部入部届</h2>
@@ -52,14 +46,11 @@ export async function POST(request: Request) {
       `,
     };
 
-    console.log('送信設定:', {
-      ...mailOptions,
-      to: toEmails
-    });
+    console.log('送信設定:', mailOptions);
 
     // メール送信
     const info = await transporter.sendMail(mailOptions);
-    console.log('送信成功です:', info);
+    console.log('送信成功:', info);
 
     return new Response(JSON.stringify({ message: 'メール送信成功', info }), {
       status: 200,
