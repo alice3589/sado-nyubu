@@ -7,7 +7,7 @@ const ActivitySchedule: React.FC = () => {
       <div className="bg-white p-4 rounded-lg shadow">
         <div className="mb-3">
           <h4 className="font-bold">日時</h4>
-          <p>2024年4月12日（金）15:30〜17:00</p>
+          <p>2024年4月18日（金）15:30〜17:00</p>
         </div>
         <div className="mb-3">
           <h4 className="font-bold">場所</h4>

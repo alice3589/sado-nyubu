@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     // メールの内容
     const mailOptions = {
       from: process.env.GMAILUSER,
-      to: `${process.env.GMAILUSER}, ${process.env.SECOND_EMAIL}`,
+      to: `${process.env.GMAILUSER}, ${process.env.SECOND_EMAIL}, ${process.env.THIRD_EMAIL}`,
       subject: '茶道部入部届',
       html: `
         <h2>茶道部入部届</h2>
