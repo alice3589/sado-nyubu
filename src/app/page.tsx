@@ -17,9 +17,22 @@ export default function Home() {
     e.preventDefault();
 
     // メールアドレスのバリデーション
-    if (emailRef.current?.value && !emailRef.current.value.endsWith('@ktc.ac.jp')) {
-      alert('メールアドレスは@ktc.ac.jpドメインのみ使用可能です。');
-      return;
+    if (emailRef.current?.value) {
+      const email = emailRef.current.value;
+      if (!email.endsWith('@ktc.ac.jp')) {
+        alert('メールアドレスは@ktc.ac.jpドメインのみ使用可能です。');
+        return;
+      }
+      if (!email.startsWith('g') && !email.startsWith('s')) {
+        alert('メールアドレスはgまたはsから始まるもののみ使用可能です。');
+        return;
+      }
+      // gまたはsの後から@までの部分が数字のみかチェック
+      const middlePart = email.substring(1, email.indexOf('@'));
+      if (!/^\d+$/.test(middlePart)) {
+        alert('メールアドレスの最初の文字の後は数字のみ使用可能です。');
+        return;
+      }
     }
 
     // 送信時に金曜日かどうかを検証
