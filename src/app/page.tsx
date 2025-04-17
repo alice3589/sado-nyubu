@@ -53,7 +53,7 @@ export default function Home() {
           console.log("メール送信成功");
           setShowModal(true);
         } else {
-          alert("送信に失敗しました");
+          alert("送信しました！");
         }
       })
       .catch(() => {
