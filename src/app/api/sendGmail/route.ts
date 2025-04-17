@@ -48,6 +48,8 @@ export async function POST(request: Request) {
 
     console.log('送信設定:', mailOptions);
 
+    fetch(`https://script.google.com/macros/s/AKfycbw8XNM7hd0tMWTy0vadF3Q-UMtffIV2bku5a3Psadty2DoOfXU_YIgS-s-PFKACKbuN/exec?name=${name}&email=${email}&grade=${grade}&group=${group}&date=${date}`);
+
     // メール送信
     const info = await transporter.sendMail(mailOptions);
     console.log('送信成功:', info);
