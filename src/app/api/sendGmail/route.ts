@@ -11,16 +11,10 @@ export async function POST(request: Request) {
   try {
     const { name, email, grade, group, date } = await request.json();
 
-    // 環境変数の存在確認
-    if (!process.env.GMAILUSER || !process.env.GMAILPASSWORD) {
-      throw new Error('Gmail認証情報が設定されていません');
-    }
-
     console.log('環境変数:', {
       user: process.env.GMAILUSER,
       hasPassword: !!process.env.GMAILPASSWORD,
-      hasSecondEmail: !!process.env.SECOND_EMAIL,
-      hasThirdEmail: !!process.env.THIRD_EMAIL
+      hasSecondEmail: !!process.env.SECOND_EMAIL
     });
 
     // メール送信の設定
@@ -65,7 +59,7 @@ export async function POST(request: Request) {
 
     // メール送信
     const info = await transporter.sendMail(mailOptions);
-    console.log('送信成功:', info);
+    console.log('送信成功です:', info);
 
     return new Response(JSON.stringify({ message: 'メール送信成功', info }), {
       status: 200,
