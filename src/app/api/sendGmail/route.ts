@@ -6,15 +6,20 @@ import nodemailer from 'nodemailer';
 //   GMAILPASSWORD=<パスワード>
 //   SECOND_EMAIL=<2つ目のメールアドレス>
 
+const SPREADSHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8XNM7hd0tMWTy0vadF3Q-UMtffIV2bku5a3Psadty2DoOfXU_YIgS-s-PFKACKbuN/exec';
+
 export async function POST(request: Request) {
   try {
     const { name, email, grade, group, date } = await request.json();
 
-    console.log('環境変数:', {
-      user: process.env.GMAILUSER,
-      hasPassword: !!process.env.GMAILPASSWORD,
-      hasSecondEmail: !!process.env.SECOND_EMAIL
-    });
+    // Googleスプレッドシートへのデータ書き込み
+    const scriptResponse = await fetch(
+      `${SPREADSHEET_SCRIPT_URL}?spreadsheetId=12UKrT6rz6VC6qGM6uPfUib2ROknaDx8WW3dkBhPyDgg&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&grade=${encodeURIComponent(grade)}&group=${encodeURIComponent(group)}&date=${encodeURIComponent(date)}`
+    );
+
+    if (!scriptResponse.ok) {
+      throw new Error('スプレッドシートへの書き込みに失敗しました');
+    }
 
     // メール送信の設定
     const transporter = nodemailer.createTransport({
@@ -34,7 +39,7 @@ export async function POST(request: Request) {
     // メールの内容
     const mailOptions = {
       from: process.env.GMAILUSER,
-      to: `${process.env.SECOND_EMAIL}`,
+      to: process.env.SECOND_EMAIL,
       subject: '茶道部入部届',
       html: `
         <h2>茶道部入部届</h2>
@@ -47,8 +52,6 @@ export async function POST(request: Request) {
     };
 
     console.log('送信設定:', mailOptions);
-
-    fetch(`https://script.google.com/macros/s/AKfycbw8XNM7hd0tMWTy0vadF3Q-UMtffIV2bku5a3Psadty2DoOfXU_YIgS-s-PFKACKbuN/exec?name=${name}&email=${email}&grade=${grade}&group=${group}&date=${date}`);
 
     // メール送信
     const info = await transporter.sendMail(mailOptions);
