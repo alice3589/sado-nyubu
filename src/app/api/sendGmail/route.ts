@@ -10,47 +10,36 @@ const SPREADSHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8XNM7h
 
 export async function POST(request: Request) {
   try {
-    // リクエストボディの取得と検証
-    let body;
-    try {
-      body = await request.json();
-    } catch (error) {
-      throw new Error('リクエストボディの解析に失敗しました');
-    }
+    const { name, email, grade, group, date } = await request.json();
 
-    if (!body || typeof body !== 'object') {
-      throw new Error('リクエストボディが不正です');
-    }
-
-    const { name, email, grade, group, date } = body;
-    if (!name || !email || !grade || !group || !date) {
-      throw new Error('必要なパラメータが不足しています');
-    }
-
-    console.log('送信データ:', { name, email, grade, group, date });
+    console.log('環境変数:', {
+      user: process.env.GMAILUSER,
+      hasPassword: !!process.env.GMAILPASSWORD,
+      hasSecondEmail: !!process.env.SECOND_EMAIL
+    });
 
     // Googleスプレッドシートへのデータ書き込み
-    const scriptResponse = await fetch(
-      `${SPREADSHEET_SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&grade=${encodeURIComponent(grade)}&group=${encodeURIComponent(group)}&date=${encodeURIComponent(date)}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    try {
+      const scriptResponse = await fetch(
+        `${SPREADSHEET_SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&grade=${encodeURIComponent(grade)}&group=${encodeURIComponent(group)}&date=${encodeURIComponent(date)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      console.log('スクリプトレスポンス:', scriptResponse.status);
+
+      if (!scriptResponse.ok) {
+        console.error('スプレッドシートへの書き込みに失敗しました:', scriptResponse.status);
+      } else {
+        const scriptResult = await scriptResponse.json();
+        console.log('スクリプト実行結果:', scriptResult);
       }
-    );
-
-    console.log('スクリプトレスポンス:', scriptResponse.status);
-
-    if (!scriptResponse.ok) {
-      throw new Error(`スプレッドシートへの書き込みに失敗しました: ${scriptResponse.status}`);
-    }
-
-    const scriptResult = await scriptResponse.json();
-    console.log('スクリプト実行結果:', scriptResult);
-
-    if (scriptResult.status !== 'success') {
-      throw new Error(`スプレッドシートへの書き込みに失敗しました: ${scriptResult.message}`);
+    } catch (error) {
+      console.error('スプレッドシートへの書き込み中にエラーが発生しました:', error);
     }
 
     // メール送信の設定
@@ -71,7 +60,7 @@ export async function POST(request: Request) {
     // メールの内容
     const mailOptions = {
       from: process.env.GMAILUSER,
-      to: process.env.SECOND_EMAIL,
+      to: `${process.env.SECOND_EMAIL}`,
       subject: '茶道部入部届',
       html: `
         <h2>茶道部入部届</h2>
