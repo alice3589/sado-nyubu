@@ -10,7 +10,16 @@ const SPREADSHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8XNM7h
 
 export async function POST(request: Request) {
   try {
-    const { name, email, grade, group, date } = await request.json();
+    // リクエストボディの取得と検証
+    const body = await request.json();
+    if (!body || typeof body !== 'object') {
+      throw new Error('リクエストボディが不正です');
+    }
+
+    const { name, email, grade, group, date } = body;
+    if (!name || !email || !grade || !group || !date) {
+      throw new Error('必要なパラメータが不足しています');
+    }
 
     console.log('送信データ:', { name, email, grade, group, date });
 
