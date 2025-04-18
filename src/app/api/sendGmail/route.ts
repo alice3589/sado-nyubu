@@ -1,10 +1,12 @@
 // src/app/api/sendGmail/route.ts
 
-const SPREADSHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8XNM7hd0tMWTy0vadF3Q-UMtffIV2bku5a3Psadty2DoOfXU_YIgS-s-PFKACKbuN/exec';
+const SPREADSHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwKyhzEXTxRoUbQlw_WBJALdzTPSZWRllFHRp4QpC6S79qWzxzemc8RZsepZOh-stq6QQ/exec';
 
 export async function POST(request: Request) {
   try {
     const { name, email, grade, group, date } = await request.json();
+
+    console.log('送信データ:', { name, email, grade, group, date });
 
     // Googleスプレッドシートへのデータ書き込みとメール送信
     const scriptResponse = await fetch(
