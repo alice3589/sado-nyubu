@@ -11,7 +11,13 @@ const SPREADSHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8XNM7h
 export async function POST(request: Request) {
   try {
     // リクエストボディの取得と検証
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (error) {
+      throw new Error('リクエストボディの解析に失敗しました');
+    }
+
     if (!body || typeof body !== 'object') {
       throw new Error('リクエストボディが不正です');
     }
@@ -25,7 +31,13 @@ export async function POST(request: Request) {
 
     // Googleスプレッドシートへのデータ書き込み
     const scriptResponse = await fetch(
-      `${SPREADSHEET_SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&grade=${encodeURIComponent(grade)}&group=${encodeURIComponent(group)}&date=${encodeURIComponent(date)}`
+      `${SPREADSHEET_SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&grade=${encodeURIComponent(grade)}&group=${encodeURIComponent(group)}&date=${encodeURIComponent(date)}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
 
     console.log('スクリプトレスポンス:', scriptResponse.status);
