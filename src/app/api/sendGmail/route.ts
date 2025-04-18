@@ -12,13 +12,24 @@ export async function POST(request: Request) {
   try {
     const { name, email, grade, group, date } = await request.json();
 
+    console.log('送信データ:', { name, email, grade, group, date });
+
     // Googleスプレッドシートへのデータ書き込み
     const scriptResponse = await fetch(
-      `${SPREADSHEET_SCRIPT_URL}?spreadsheetId=12UKrT6rz6VC6qGM6uPfUib2ROknaDx8WW3dkBhPyDgg&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&grade=${encodeURIComponent(grade)}&group=${encodeURIComponent(group)}&date=${encodeURIComponent(date)}`
+      `${SPREADSHEET_SCRIPT_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&grade=${encodeURIComponent(grade)}&group=${encodeURIComponent(group)}&date=${encodeURIComponent(date)}`
     );
 
+    console.log('スクリプトレスポンス:', scriptResponse.status);
+
     if (!scriptResponse.ok) {
-      throw new Error('スプレッドシートへの書き込みに失敗しました');
+      throw new Error(`スプレッドシートへの書き込みに失敗しました: ${scriptResponse.status}`);
+    }
+
+    const scriptResult = await scriptResponse.json();
+    console.log('スクリプト実行結果:', scriptResult);
+
+    if (scriptResult.status !== 'success') {
+      throw new Error(`スプレッドシートへの書き込みに失敗しました: ${scriptResult.message}`);
     }
 
     // メール送信の設定
