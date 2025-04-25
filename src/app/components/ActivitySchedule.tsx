@@ -1,29 +1,45 @@
-import React from 'react';
+'use client';
 
-const ActivitySchedule: React.FC = () => {
+import { useState } from 'react';
+import Carousel from 'react-bootstrap/Carousel';
+import ExampleCarouselImage from './ExampleCarouselImage';
+
+function ControlledCarousel() {
+  const [index, setIndex] = useState(0);
+
+  const handleSelect = (selectedIndex: number) => {
+    setIndex(selectedIndex);
+  };
+
   return (
-    <div className="container mt-5">
-      <h3 className="mb-4 text-center">次の活動予定</h3>
-      <div className="bg-white p-4 rounded-lg shadow">
-        <div className="mb-3">
-          <h4 className="font-bold">日時</h4>
-          <p>2024年4月18日（金）15:30〜17:00</p>
-        </div>
-        <div className="mb-3">
-          <h4 className="font-bold">場所</h4>
-          <p>茶道室（3号館1階）</p>
-        </div>
-        <div>
-          <h4 className="font-bold">持ち物</h4>
-          <ul className="list-disc pl-5">
-            <li>上履き</li>
-            <li>白い靴下</li>
-            <li>筆記用具</li>
-          </ul>
-        </div>
-      </div>
+    <div style={{ backgroundColor: '#f8f9fa', padding: '20px' }}>
+      <Carousel activeIndex={index} onSelect={handleSelect}>
+        <Carousel.Item>
+          <ExampleCarouselImage text="First slide" />
+          <Carousel.Caption>
+            <h3>First slide label</h3>
+            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item>
+          <ExampleCarouselImage text="Second slide" />
+          <Carousel.Caption>
+            <h3>Second slide label</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item>
+          <ExampleCarouselImage text="Third slide" />
+          <Carousel.Caption>
+            <h3>Third slide label</h3>
+            <p>
+              Praesent commodo cursus magna, vel scelerisque nisl consectetur.
+            </p>
+          </Carousel.Caption>
+        </Carousel.Item>
+      </Carousel>
     </div>
   );
-};
+}
 
-export default ActivitySchedule; 
+export default ControlledCarousel;
