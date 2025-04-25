@@ -9,7 +9,7 @@ export default function Navigation() {
 
   const menuItems = [
     { name: 'ホーム', path: '/' },
-    { name: '桜の花びら', path: '/cherry-blossom' },
+    { name: '部活動紹介(作成中)', path: '/cherry-blossom' },
   ];
 
   return (
@@ -25,7 +25,13 @@ export default function Navigation() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`nav-link ${pathname === item.path ? 'active' : ''}`}
+                className={`nav-link position-relative ${
+                  pathname === item.path ? 'active' : ''
+                }`}
+                style={{
+                  borderBottom: pathname === item.path ? '2px solid #0d6efd' : 'none',
+                  paddingBottom: '0.5rem',
+                }}
               >
                 {item.name}
               </Link>
