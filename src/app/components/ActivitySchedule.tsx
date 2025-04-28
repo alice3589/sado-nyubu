@@ -15,7 +15,7 @@ function ControlledCarousel() {
     <div style={{ backgroundColor: '#f8f9fa', padding: '20px' }}>
       <Carousel activeIndex={index} onSelect={handleSelect}>
         <Carousel.Item>
-          <ExampleCarouselImage text="First slide" />
+          <ExampleCarouselImage text="普段の活動の様子" />
           <Carousel.Caption>
             <h3>First slide label</h3>
             <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
