@@ -22,7 +22,7 @@ function ControlledCarousel() {
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item>
-          <ExampleCarouselImage text="Second slide" />
+          <ExampleCarouselImage text="文化祭での様子" />
           <Carousel.Caption>
             <h3>Second slide label</h3>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
