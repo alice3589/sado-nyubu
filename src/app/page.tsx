@@ -91,13 +91,15 @@ export default function Home() {
             <label htmlFor="email" className="form-label">メールアドレス</label>
             <input type="email" className="form-control" id="email" required ref={emailRef} />
           </div>
-          <div className="mb-3">
-            <label htmlFor="grade" className="form-label">学年</label>
-            <input type="text" className="form-control" id="grade" required ref={gradeRef} />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="group" className="form-label">組</label>
-            <input type="text" className="form-control" id="group" required ref={groupRef} />
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <label htmlFor="grade" className="form-label">学年</label>
+              <input type="text" className="form-control" id="grade" required ref={gradeRef} />
+            </div>
+            <div className="col-md-6">
+              <label htmlFor="group" className="form-label">組</label>
+              <input type="text" className="form-control" id="group" required ref={groupRef} />
+            </div>
           </div>
           <div className="mb-3">
             <label htmlFor="date" className="form-label">体験入部希望日（金曜日のみ選択）</label>

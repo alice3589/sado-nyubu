@@ -17,21 +17,21 @@ function ControlledCarousel() {
         <Carousel.Item>
           <ExampleCarouselImage text="普段の活動の様子" />
           <Carousel.Caption>
-            <h3>First slide label</h3>
+            <h3>普段の活動の様子</h3>
             <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item>
           <ExampleCarouselImage text="文化祭での様子" />
           <Carousel.Caption>
-            <h3>Second slide label</h3>
+            <h3>文化祭での様子</h3>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item>
           <ExampleCarouselImage text="その他の活動" />
           <Carousel.Caption>
-            <h3>Third slide label</h3>
+            <h3>その他の活動</h3>
             <p>
               Praesent commodo cursus magna, vel scelerisque nisl consectetur.
             </p>
